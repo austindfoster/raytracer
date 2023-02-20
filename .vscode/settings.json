@@ -1,0 +1,5 @@
+{
+    "lldb.launch.initCommands": [
+        "command script import ${workspaceFolder}/.vscode/name_of_ndarray_format.py"
+    ],
+}
