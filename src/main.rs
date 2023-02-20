@@ -1,12 +1,12 @@
-// use std::fs::File;
-// use std::fs::OpenOptions;
-// use std::io::Write;
+use std::fs::File;
+use std::fs::OpenOptions;
+use std::io::Write;
 
 use ndarray::Array1;
 use ndarray::array;
 
 // const FOV: f32 = 90.0;
-const ASPECT_RATIO: f32 = 16.0 / 9.0;
+const ASPECT_RATIO: f32 = 1.0 / 1.0; // 16.0 / 9.0;
 const IMG_WIDTH: u32 = 400;
 const IMG_HEIGHT: u32 = (IMG_WIDTH as f32 / ASPECT_RATIO) as u32;
 
@@ -67,32 +67,20 @@ struct Scene {
     camera: Camera,
 }
 
-// fn create_ppm(filename: &str) -> std::io::Result<()> {
-//     let mut output = File::create(filename)?;
-//     write!(output, "P3\n256 256\n255\n")?;
-//     Ok(())
-//     // for j in (0..height).rev() {
-//     //     for i in 0..width {
-//     //         let r: f32 = (i as f32 / (width-1) as f32) as f32;
-//     //         let g: f32 = (j as f32 / (height-1) as f32) as f32;
-//     //         let b: f32 = 0.25;
+fn create_ppm(filename: &str) -> std::io::Result<()> {
+    let mut output = File::create(filename)?;
+    write!(output, "P3\n{} {}\n255\n",IMG_WIDTH, IMG_HEIGHT)?;
+    Ok(())
+}
 
-//     //         let ir: u32 = (255.999 * r) as u32;
-//     //         let ig: u32 = (255.999 * g) as u32;
-//     //         let ib: u32 = (255.999 * b) as u32;
-//     //         println!("{ir} {ig} {ib}");
-//     //     }
-//     // }
-// }
-
-// fn write_to_ppm(filename: &str, color: Array1<f32>) {
-//     let r = (color[0] * 255.999) as u32;
-//     let g = (color[1] * 255.999) as u32;
-//     let b = (color[2] * 255.999) as u32;
-//     let mut file = OpenOptions::new().append(true).open(filename).expect("Unable to open file");
-//     let pixel_color = format!("{} {} {}\n", r, g, b);
-//     file.write_all(pixel_color.as_bytes()).expect("write failed");
-// }
+fn write_to_ppm(filename: &str, color: Array1<f32>) {
+    let r = (color[0] * 255.999) as u32;
+    let g = (color[1] * 255.999) as u32;
+    let b = (color[2] * 255.999) as u32;
+    let mut file = OpenOptions::new().append(true).open(filename).expect("Unable to open file");
+    let pixel_color = format!("{} {} {}\n", r, g, b);
+    file.write_all(pixel_color.as_bytes()).expect("write failed");
+}
 
 fn construct_scene() -> Scene {
     let c1 = Camera {
@@ -132,6 +120,11 @@ fn construct_scene() -> Scene {
     scene
 }
 
+fn normalize_vector(v: Array1<f32>) -> Array1<f32> {
+    let norm = v[0].powi(2) + v[1].powi(2) + v[2].powi(2);
+    v / norm.sqrt()
+}
+
 fn calculate_ray(origin: Array1<f32>, direction: Array1<f32>) -> Ray {
     let r = Ray {
         origin,
@@ -147,7 +140,8 @@ fn trace_rays(scene: Scene, filename: &str) {
     let tlc: Array1<f32> = origin - &h / 2.0 + &v / 2.0 - array![0.0, 0.0, FOCAL_LENGTH];
     for j in (0..IMG_HEIGHT).rev() {
         for i in 0..IMG_WIDTH {
-            let r = calculate_ray(origin.clone(), &tlc + (i / (IMG_WIDTH - 1)) as f32 * &h + j as f32 / (IMG_HEIGHT - 1) as f32 * &v - origin);
+            let dir = &tlc + (i as f32 / (IMG_WIDTH - 1) as f32) as f32 * &h + j as f32 / (IMG_HEIGHT - 1) as f32 * &v - origin;
+            let r = calculate_ray(origin.clone(), normalize_vector(dir));
             for o in &scene.objects {
                 let (b,p) = sphere_intersections(&r,o);
                 if b {
@@ -155,8 +149,11 @@ fn trace_rays(scene: Scene, filename: &str) {
                     for l in &scene.lights {
                         color = color.clone() + calculate_lighting(&p, &o.shader, o, l, &scene.camera.look_from);
                     }
-                    // write_to_ppm(filename, color);
-                    print!("{}", color);
+                    // write_to_ppm(filename, array![0.2,0.2,0.2]);
+                    write_to_ppm(filename, color);
+                    // print!("{}", color);
+                } else {
+                    write_to_ppm(filename, array![0.2,0.2,0.2]);
                 }
                 // match o  {
                 //     Object::Sphere => {
@@ -222,7 +219,7 @@ fn calculate_lighting(p: &Array1<f32>, sh: &Shader, s: &Sphere, l: &Light, v: &A
     let n = calculate_normal(p,s);
     let ld = array![l.direction[0], l.direction[1], l.direction[2]];
     let r = calculate_reflection(&n, &ld);
-    calculate_diffuse(sh.kd, &array![l.color[0], l.color[1], l.color[2]], &sh.od, &n, &ld) 
+    calculate_diffuse(sh.kd, &l.color, &sh.od, &n, &l.direction) 
     + calculate_ambient(sh.ka, &sh.ao, &sh.od) 
     + calculate_specular(sh.ks, &array![l.color[0], l.color[1], l.color[2]], &sh.os, v, &r, sh.kgls)
 }
@@ -232,12 +229,12 @@ fn calculate_lighting(p: &Array1<f32>, sh: &Shader, s: &Sphere, l: &Light, v: &A
 // }
 
 // -> Result<(), std::io::Error> 
-fn main() {
+fn main() -> Result<(), std::io::Error> {
     let scene = construct_scene();
     let filename = "image.ppm";
-    // let result = create_ppm(filename);
+    let result = create_ppm(filename);
     trace_rays(scene, filename);
-    //result
+    result
     // println!("P3\n256 256\n255");
     // create_ppm(256,256);
 }
