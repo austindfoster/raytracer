@@ -11,13 +11,7 @@ const ASPECT_RATIO: f32 = 1.0 / 1.0; // 16.0 / 9.0;
 const IMG_WIDTH: u32 = 500;
 const IMG_HEIGHT: u32 = (IMG_WIDTH as f32 / ASPECT_RATIO) as u32;
 const BACKGROUND_COLOR: [f32;3] = [0.2,0.2,0.2];
-
-// const VIEW_H: f32 = 2.0;
-// const VIEW_W: f32 = ASPECT_RATIO * VIEW_H;
 const FOCAL_LENGTH: f32 = 1.0;
-
-// const VERTICAL: [f32;3] = [0.0, VIEW_H, 0.0];
-// const HORIZONTAL: [f32;3] = [VIEW_W, 0.0, 0.0];
 
 struct Shader {
     kd: f32,
@@ -35,9 +29,15 @@ struct Sphere {
     shader: Shader,
 }
 
-// struct Polygon {
-//     triangles: Vec<Triagle>,
+// struct Triangle {
+//     p1: Array1<f32>,
+//     p2: Array1<f32>,
+//     p3: Array1<f32>,
+// }
 
+// struct Polygon {
+//     triangles: Vec<Triangle>,
+//     shader: Shader,
 // }
 
 // enum Object {
@@ -178,6 +178,59 @@ fn construct_scene() -> Scene {
     scene
 }
 
+fn calculate_diffuse(kd: f32, plc: &Array1<f32>, od: &Array1<f32>, n: &Array1<f32>, l: &Array1<f32>) -> Array1<f32> {
+    kd * plc * od * f32::max(0.0, n.dot(l)) as f32
+}
+
+fn calculate_ambient(ka: f32, ao: &Array1<f32>, od: &Array1<f32>) -> Array1<f32> {
+    ka * ao * od
+}
+
+fn calculate_specular(ks: f32, plc: &Array1<f32>, os: &Array1<f32>, v: &Array1<f32>, r: &Array1<f32>, kgls: f32) -> Array1<f32> {
+    ks * plc * os * (f32::max(0.0, v.dot(r)) as f32).powf(kgls)
+}
+
+fn calculate_normal(p: &Array1<f32>, s: &Sphere) -> Array1<f32> {
+    let n = array![(p[0] - s.center[0]) / s.radius, (p[1] - s.center[1]) / s.radius, (p[2] - s.center[2]) / s.radius];
+    normalize_vector(&n)
+}
+
+fn calculate_reflection(n: &Array1<f32>, l: &Array1<f32>) -> Array1<f32> {
+    normalize_vector(&(2.0 * n * n.dot(l) - l))
+}
+
+fn calculate_lighting(p: &Array1<f32>, sh: &Shader, s: &Sphere, l: &Light, v: &Array1<f32>) -> Array1<f32> {
+    let n = calculate_normal(p,s);
+    let r = calculate_reflection(&n, &l.direction);
+    let dif = calculate_diffuse(sh.kd, &l.color, &sh.od, &n, &l.direction);
+    let amb = calculate_ambient(sh.ka, &sh.ao, &sh.od);
+    let spec = calculate_specular(sh.ks, &l.color, &sh.os, v, &r, sh.kgls);
+    dif + amb + spec
+}
+
+fn sphere_intersections(r: &Ray, s: &Sphere) -> (bool, Array1<f32>) {
+    let oc = r.origin - &s.center;
+    let a = r.direction.dot(&r.direction);
+    let b = 2.0 * oc.dot(&r.direction);
+    let c = oc.dot(&oc) - s.radius* s.radius;
+    let d = b * b - 4.0 * a * c;
+    if d < 0.0 {
+        return (false, array![0.0,0.0,0.0]);
+    }
+    let t: f32;
+    let t0: f32 = (-b - d.sqrt()) / (2.0 * a);
+    if t0 <= 0.0 {
+        let t1: f32 = (-b + d.sqrt()) / (2.0 * a);
+        if t1 <= 0.0 {
+            return (false, array![0.0,0.0,0.0]);
+        }
+        t = t1;
+    } else {
+        t = t0;
+    }
+    return (true, r.origin + &r.direction * t);
+}
+
 fn normalize_vector(v: &Array1<f32>) -> Array1<f32> {
     let norm = v[0].powi(2) + v[1].powi(2) + v[2].powi(2);
     v / norm.sqrt()
@@ -237,59 +290,6 @@ fn trace_rays(scene: Scene, filename: &str) {
         }
         prev_y += y_inc;
     }
-}
-
-fn sphere_intersections(r: &Ray, s: &Sphere) -> (bool, Array1<f32>) {
-    let oc = r.origin - &s.center;
-    let a = r.direction.dot(&r.direction);
-    let b = 2.0 * oc.dot(&r.direction);
-    let c = oc.dot(&oc) - s.radius* s.radius;
-    let d = b * b - 4.0 * a * c;
-    if d < 0.0 {
-        return (false, array![0.0,0.0,0.0]);
-    }
-    let t: f32;
-    let t0: f32 = (-b - d.sqrt()) / (2.0 * a);
-    if t0 <= 0.0 {
-        let t1: f32 = (-b + d.sqrt()) / (2.0 * a);
-        if t1 <= 0.0 {
-            return (false, array![0.0,0.0,0.0]);
-        }
-        t = t1;
-    } else {
-        t = t0;
-    }
-    return (true, r.origin + &r.direction * t);
-}
-
-fn calculate_normal(p: &Array1<f32>, s: &Sphere) -> Array1<f32> {
-    let n = array![(p[0] - s.center[0]) / s.radius, (p[1] - s.center[1]) / s.radius, (p[2] - s.center[2]) / s.radius];
-    normalize_vector(&n)
-}
-
-fn calculate_reflection(n: &Array1<f32>, l: &Array1<f32>) -> Array1<f32> {
-    normalize_vector(&(2.0 * n * n.dot(l) - l))
-}
-
-fn calculate_diffuse(kd: f32, plc: &Array1<f32>, od: &Array1<f32>, n: &Array1<f32>, l: &Array1<f32>) -> Array1<f32> {
-    kd * plc * od * f32::max(0.0, n.dot(l)) as f32
-}
-
-fn calculate_ambient(ka: f32, ao: &Array1<f32>, od: &Array1<f32>) -> Array1<f32> {
-    ka * ao * od
-}
-
-fn calculate_specular(ks: f32, plc: &Array1<f32>, os: &Array1<f32>, v: &Array1<f32>, r: &Array1<f32>, kgls: f32) -> Array1<f32> {
-    ks * plc * os * (f32::max(0.0, v.dot(r)) as f32).powf(kgls)
-}
-
-fn calculate_lighting(p: &Array1<f32>, sh: &Shader, s: &Sphere, l: &Light, v: &Array1<f32>) -> Array1<f32> {
-    let n = calculate_normal(p,s);
-    let r = calculate_reflection(&n, &l.direction);
-    let dif = calculate_diffuse(sh.kd, &l.color, &sh.od, &n, &l.direction);
-    let amb = calculate_ambient(sh.ka, &sh.ao, &sh.od);
-    let spec = calculate_specular(sh.ks, &l.color, &sh.os, v, &r, sh.kgls);
-    dif + amb + spec
 }
 
 fn main() -> Result<(), std::io::Error> {
