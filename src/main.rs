@@ -1,333 +1,16 @@
-use std::fs::File;
-use std::fs::OpenOptions;
+use std::fs::{File,OpenOptions};
 use std::io::Write;
-use std::ops::{Add, Div, Mul, Sub};
-use std::u128::MAX;
 
-impl Add for Point {
-    type Output = Self;
-    fn add(self, b: Self) -> Self {
-        Self {
-            x: self.x + b.x,
-            y: self.y + b.y,
-            z: self.z + b.z,
-        }
-    }
-}
+use structs::*;
 
-impl Add for &Point {
-    type Output = Point;
-    fn add(self, b: Self) -> Point {
-        Point {
-            x: self.x + b.x,
-            y: self.y + b.y,
-            z: self.z + b.z,
-        }
-    }
-}
-
-impl Add<Point> for &Point {
-    type Output = Point;
-    fn add(self, b: Point) -> Point {
-        Point {
-            x: self.x + b.x,
-            y: self.y + b.y,
-            z: self.z + b.z,
-        }
-    }
-}
-
-impl Add<&Point> for Point {
-    type Output = Self;
-    fn add(self, b: &Self) -> Self {
-        Self {
-            x: self.x + b.x,
-            y: self.y + b.y,
-            z: self.z + b.z,
-        }
-    }
-}
-
-impl Add<f32> for Point {
-    type Output = Self;
-    fn add(self, b: f32) -> Self {
-        Self {
-            x: self.x + b,
-            y: self.y + b,
-            z: self.z + b,
-        }
-    }
-}
-
-impl Add<f32> for &Point {
-    type Output = Point;
-    fn add(self, b: f32) -> Point {
-        Point {
-            x: self.x + b,
-            y: self.y + b,
-            z: self.z + b,
-        }
-    }
-}
-
-impl Add<&Point> for f32 {
-    type Output = Point;
-    fn add(self, b: &Point) -> Point {
-        Point {
-            x: self + b.x,
-            y: self + b.y,
-            z: self + b.z,
-        }
-    }
-}
-
-impl Sub for Point {
-    type Output = Self;
-    fn sub(self, b: Self) -> Self {
-        Self {
-            x: self.x - b.x,
-            y: self.y - b.y,
-            z: self.z - b.z,
-        }
-    }
-}
-
-impl Sub for &Point {
-    type Output = Point;
-    fn sub(self, b: Self) -> Point {
-        Point {
-            x: self.x - b.x,
-            y: self.y - b.y,
-            z: self.z - b.z,
-        }
-    }
-}
-
-impl Sub<&Point> for Point {
-    type Output = Self;
-    fn sub(self, b: &Self) -> Self {
-        Self {
-            x: self.x - b.x,
-            y: self.y - b.y,
-            z: self.z - b.z,
-        }
-    }
-}
-
-impl Sub<Point> for &Point {
-    type Output = Point;
-    fn sub(self, b: Point) -> Point {
-        Point {
-            x: self.x - b.x,
-            y: self.y - b.y,
-            z: self.z - b.z,
-        }
-    }
-}
-
-impl Sub<f32> for Point {
-    type Output = Self;
-    fn sub(self, b: f32) -> Self {
-        Self {
-            x: self.x - b,
-            y: self.y - b,
-            z: self.z - b,
-        }
-    }
-}
-
-impl Sub<f32> for &Point {
-    type Output = Point;
-    fn sub(self, b: f32) -> Point {
-        Point {
-            x: self.x - b,
-            y: self.y - b,
-            z: self.z - b,
-        }
-    }
-}
-
-impl Sub<&Point> for f32 {
-    type Output = Point;
-    fn sub(self, b: &Point) -> Point {
-        Point {
-            x: self - b.x,
-            y: self - b.y,
-            z: self - b.z,
-        }
-    }
-}
-
-impl Mul for Point {
-    type Output = Self;
-    fn mul(self, b: Self) -> Self {
-        Self {
-            x: self.x * b.x,
-            y: self.y * b.y,
-            z: self.z * b.z,
-        }
-    }
-}
-
-impl Mul for &Point {
-    type Output = Point;
-    fn mul(self, b: Self) -> Point {
-        Point {
-            x: self.x * b.x,
-            y: self.y * b.y,
-            z: self.z * b.z,
-        }
-    }
-}
-
-impl Mul<Point> for &Point {
-    type Output = Point;
-    fn mul(self, b: Point) -> Point {
-        Point {
-            x: self.x * b.x,
-            y: self.y * b.y,
-            z: self.z * b.z,
-        }
-    }
-}
-
-impl Mul<&Point> for Point {
-    type Output = Self;
-    fn mul(self, b: &Self) -> Self {
-        Self {
-            x: self.x * b.x,
-            y: self.y * b.y,
-            z: self.z * b.z,
-        }
-    }
-}
-
-impl Mul<f32> for Point {
-    type Output = Self;
-    fn mul(self, b: f32) -> Self {
-        Self {
-            x: self.x * b,
-            y: self.y * b,
-            z: self.z * b,
-        }
-    }
-}
-
-impl Mul<f32> for &Point {
-    type Output = Point;
-    fn mul(self, b: f32) -> Point {
-        Point {
-            x: self.x * b,
-            y: self.y * b,
-            z: self.z * b,
-        }
-    }
-}
-
-impl Mul<Point> for f32 {
-    type Output = Point;
-    fn mul(self, b: Point) -> Point {
-        Point {
-            x: self * b.x,
-            y: self * b.y,
-            z: self * b.z,
-        }
-    }
-}
-
-impl Mul<&Point> for f32 {
-    type Output = Point;
-    fn mul(self, b: &Point) -> Point {
-        Point {
-            x: self * b.x,
-            y: self * b.y,
-            z: self * b.z,
-        }
-    }
-}
-
-impl Div for Point {
-    type Output = Self;
-    fn div(self, b: Self) -> Self {
-        Self {
-            x: self.x / b.x,
-            y: self.y / b.y,
-            z: self.z / b.z,
-        }
-    }
-}
-
-impl Div for &Point {
-    type Output = Point;
-    fn div(self, b: Self) -> Point {
-        Point {
-            x: self.x / b.x,
-            y: self.y / b.y,
-            z: self.z / b.z,
-        }
-    }
-}
-
-impl Div<Point> for &Point {
-    type Output = Point;
-    fn div(self, b: Point) -> Point {
-        Point {
-            x: self.x / b.x,
-            y: self.y / b.y,
-            z: self.z / b.z,
-        }
-    }
-}
-
-impl Div<&Point> for Point {
-    type Output = Self;
-    fn div(self, b: &Self) -> Self {
-        Self {
-            x: self.x / b.x,
-            y: self.y / b.y,
-            z: self.z / b.z,
-        }
-    }
-}
-
-impl Div<f32> for Point {
-    type Output = Self;
-    fn div(self, b: f32) -> Self {
-        Self {
-            x: self.x / b,
-            y: self.y / b,
-            z: self.z / b,
-        }
-    }
-}
-
-impl Div<f32> for &Point {
-    type Output = Point;
-    fn div(self, b: f32) -> Point {
-        Point {
-            x: self.x / b,
-            y: self.y / b,
-            z: self.z / b,
-        }
-    }
-}
-
-impl Div<&Point> for f32 {
-    type Output = Point;
-    fn div(self, b: &Point) -> Point {
-        Point {
-            x: self / b.x,
-            y: self / b.y,
-            z: self / b.z,
-        }
-    }
-}
+pub mod overload;
+pub mod structs;
 
 const FOV: f32 = 90.0;
 const ASPECT_RATIO: f32 = 1.0 / 1.0; // 16.0 / 9.0;
 const IMG_WIDTH: u32 = 500;
 const IMG_HEIGHT: u32 = (IMG_WIDTH as f32 / ASPECT_RATIO) as u32;
-const MAX_DEPTH: u32 = 3;
+const MAX_DEPTH: u32 = 1;
 const BACKGROUND_COLOR: Point = Point {
     x: 0.2,
     y: 0.2,
@@ -344,103 +27,6 @@ const AMBIENT_LIGHT: Point = Point {
     z: 0.1,
 };
 const FOCAL_LENGTH: f32 = 1.0;
-
-struct Point {
-    x: f32,
-    y: f32,
-    z: f32,
-}
-
-struct Shader {
-    kd: f32,
-    ks: f32,
-    ka: f32,
-    od: Point,
-    os: Point,
-    kgls: f32,
-    kr: f32,
-    ao: Point,
-}
-
-struct Sphere {
-    center: Point,
-    radius: f32,
-    shader: Shader,
-}
-
-struct Triangle {
-    p1: Point,
-    p2: Point,
-    p3: Point,
-}
-
-struct Polygon {
-    triangles: Vec<Triangle>,
-    shader: Shader,
-}
-
-// enum Object {
-//     Sphere(Sphere),
-//     Polygon(Polygon),
-// }
-
-trait Object {
-    fn intersect(&self, r: &Ray) -> (bool, Point);
-    fn calculate_normal(&self, p: &Point) -> Point;
-    fn get_shader(&self) -> &Shader;
-}
-
-impl Object for Sphere {
-    fn intersect(&self, r: &Ray) -> (bool, Point) {
-        return sphere_intersection(r, &self);
-    }
-
-    fn calculate_normal(&self, p: &Point) -> Point {
-        return calculate_sphere_normal(p, &self);
-    }
-
-    fn get_shader(&self) -> &Shader {
-        return &self.shader;
-    }
-}
-
-impl Object for Polygon {
-    fn intersect(&self, r: &Ray) -> (bool, Point) {
-        return polygon_intersection(r, self);
-    }
-
-    fn calculate_normal(&self, p: &Point) -> Point {
-        let tn = compute_triangle_normal(&self.triangles[p.x as usize]);
-        return tn;
-    }
-
-    fn get_shader(&self) -> &Shader {
-        return &self.shader;
-    }
-}
-
-struct Light {
-    color: Point,
-    direction: Point,
-}
-
-struct Camera {
-    look_from: Point,
-    look_at: Point,
-    look_up: Point,
-    fov: f32,
-}
-
-struct Ray<'a> {
-    origin: &'a Point,
-    direction: Point,
-}
-
-struct Scene {
-    objects: Vec<Box<dyn Object>>,
-    lights: Vec<Light>,
-    camera: Camera,
-}
 
 fn cross(a: &Point, b: &Point) -> Point {
     Point {
@@ -461,9 +47,12 @@ fn create_ppm(filename: &str) -> std::io::Result<()> {
 }
 
 fn save_colors(mut colors: String, color: Point) -> String {
-    let r = u32::min((color.x * 255.999) as u32, 255);
-    let g = u32::min((color.y * 255.999) as u32, 255);
-    let b = u32::min((color.z * 255.999) as u32, 255);
+    let r = (color.x * 255.999) as u32;
+    let g = (color.y * 255.999) as u32;
+    let b = (color.z * 255.999) as u32;
+    // let r = u32::min((color.x * 255.999) as u32, 255);
+    // let g = u32::min((color.y * 255.999) as u32, 255);
+    // let b = u32::min((color.z * 255.999) as u32, 255);
     let pixel_color = format!("{} {} {}\n", r, g, b);
     colors.push_str(&pixel_color);
     return colors;
@@ -504,40 +93,10 @@ fn construct_scene0() -> Scene {
             z: 1.0,
         },
         direction: normalize_vector(&Point {
-            x: 0.0,
+            x: 1.0,
             y: 1.0,
-            z: 0.0,
+            z: 1.0,
         }),
-    };
-    let s0 = Sphere {
-        center: Point {
-            x: 0.0,
-            y: 0.3,
-            z: -1.0,
-        },
-        radius: 0.25,
-        shader: Shader {
-            kd: 0.0,
-            ks: 0.1,
-            ka: 0.1,
-            od: Point {
-                x: 0.75,
-                y: 0.75,
-                z: 0.75,
-            },
-            os: Point {
-                x: 1.0,
-                y: 1.0,
-                z: 1.0,
-            },
-            kgls: 10.0,
-            kr: 0.9,
-            ao: Point {
-                x: 0.0,
-                y: 0.0,
-                z: 0.0,
-            },
-        },
     };
     let s1 = Sphere {
         center: Point {
@@ -547,7 +106,7 @@ fn construct_scene0() -> Scene {
         },
         radius: 0.15,
         shader: Shader {
-            kd: 0.6,
+            kd: 0.8,
             ks: 0.1,
             ka: 0.3,
             od: Point {
@@ -577,7 +136,7 @@ fn construct_scene0() -> Scene {
         },
         radius: 0.2,
         shader: Shader {
-            kd: 0.5,
+            kd: 0.6,
             ks: 0.3,
             ka: 0.1,
             od: Point {
@@ -591,7 +150,7 @@ fn construct_scene0() -> Scene {
                 z: 1.0,
             },
             kgls: 32.0,
-            kr: 0.1,
+            kr: 0.0,
             ao: Point {
                 x: 0.1,
                 y: 0.1,
@@ -607,7 +166,7 @@ fn construct_scene0() -> Scene {
         },
         radius: 0.3,
         shader: Shader {
-            kd: 0.6,
+            kd: 0.7,
             ks: 0.2,
             ka: 0.1,
             od: Point {
@@ -621,7 +180,7 @@ fn construct_scene0() -> Scene {
                 z: 0.5,
             },
             kgls: 64.0,
-            kr: 0.1,
+            kr: 0.0,
             ao: Point {
                 x: 0.1,
                 y: 0.1,
@@ -637,7 +196,7 @@ fn construct_scene0() -> Scene {
         },
         radius: 10000.0,
         shader: Shader {
-            kd: 0.5,
+            kd: 0.9,
             ks: 0.0,
             ka: 0.1,
             od: Point {
@@ -651,7 +210,7 @@ fn construct_scene0() -> Scene {
                 z: 1.0,
             },
             kgls: 16.0,
-            kr: 0.4,
+            kr: 0.0,
             ao: Point {
                 x: 0.1,
                 y: 0.1,
@@ -777,8 +336,8 @@ fn construct_scene1() -> Scene {
     let p0: Polygon = Polygon {
         triangles,
         shader: Shader {
-            kd: 0.7,
-            ks: 0.2,
+            kd: 0.9,
+            ks: 1.0,
             ka: 0.1,
             od: Point {
                 x: 0.0,
@@ -804,8 +363,8 @@ fn construct_scene1() -> Scene {
     let p1: Polygon = Polygon {
         triangles,
         shader: Shader {
-            kd: 0.7,
-            ks: 0.2,
+            kd: 0.9,
+            ks: 1.0,
             ka: 0.1,
             od: Point {
                 x: 1.0,
@@ -823,139 +382,14 @@ fn construct_scene1() -> Scene {
                 x: 0.0,
                 y: 0.0,
                 z: 0.0,
-            },
-        },
-    };
-    let s1 = Sphere {
-        center: Point {
-            x: 0.45,
-            y: 0.0,
-            z: -0.15,
-        },
-        radius: 0.15,
-        shader: Shader {
-            kd: 0.6,
-            ks: 0.1,
-            ka: 0.3,
-            od: Point {
-                x: 1.0,
-                y: 1.0,
-                z: 1.0,
-            },
-            os: Point {
-                x: 1.0,
-                y: 1.0,
-                z: 1.0,
-            },
-            kgls: 4.0,
-            kr: 0.0,
-            ao: Point {
-                x: 0.1,
-                y: 0.1,
-                z: 0.1,
-            },
-        },
-    };
-    let s2 = Sphere {
-        center: Point {
-            x: 0.0,
-            y: 0.0,
-            z: -0.1,
-        },
-        radius: 0.2,
-        shader: Shader {
-            kd: 0.5,
-            ks: 0.3,
-            ka: 0.1,
-            od: Point {
-                x: 1.0,
-                y: 0.0,
-                z: 0.0,
-            },
-            os: Point {
-                x: 1.0,
-                y: 1.0,
-                z: 1.0,
-            },
-            kgls: 32.0,
-            kr: 0.1,
-            ao: Point {
-                x: 0.1,
-                y: 0.1,
-                z: 0.1,
-            },
-        },
-    };
-    let s3 = Sphere {
-        center: Point {
-            x: -0.6,
-            y: 0.0,
-            z: 0.0,
-        },
-        radius: 0.3,
-        shader: Shader {
-            kd: 0.6,
-            ks: 0.2,
-            ka: 0.1,
-            od: Point {
-                x: 0.0,
-                y: 1.0,
-                z: 0.0,
-            },
-            os: Point {
-                x: 0.5,
-                y: 1.0,
-                z: 0.5,
-            },
-            kgls: 64.0,
-            kr: 0.1,
-            ao: Point {
-                x: 0.1,
-                y: 0.1,
-                z: 0.1,
-            },
-        },
-    };
-    let s4 = Sphere {
-        center: Point {
-            x: 0.0,
-            y: -10000.5,
-            z: 0.0,
-        },
-        radius: 10000.0,
-        shader: Shader {
-            kd: 0.5,
-            ks: 0.0,
-            ka: 0.1,
-            od: Point {
-                x: 0.0,
-                y: 0.0,
-                z: 1.0,
-            },
-            os: Point {
-                x: 1.0,
-                y: 1.0,
-                z: 1.0,
-            },
-            kgls: 16.0,
-            kr: 0.4,
-            ao: Point {
-                x: 0.1,
-                y: 0.1,
-                z: 0.1,
             },
         },
     };
 
     let mut objects: Vec<Box<dyn Object>> = Vec::new();
-    //let o1 = Object::Sphere(Sphere::from(s1));
     objects.push(Box::new(s0));
     objects.push(Box::new(p0));
     objects.push(Box::new(p1));
-    // objects.push(Box::new(s1));
-    // objects.push(Box::new(s2));
-    // objects.push(Box::new(s3));
-    // objects.push(Box::new(s4));
     let mut lights = Vec::new();
     lights.push(l1);
     let scene = Scene {
@@ -1225,6 +659,265 @@ fn construct_scene2() -> Scene {
     scene
 }
 
+fn construct_scene3() -> Scene {
+    let c1 = Camera {
+        look_from: Point {
+            x: 0.0,
+            y: 0.0,
+            z: 1.0,
+        },
+        look_at: Point {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+        },
+        look_up: Point {
+            x: 0.0,
+            y: 1.0,
+            z: 0.0,
+        },
+        fov: 90.0,
+    };
+    let l1 = Light {
+        // location: [0.0,0.0,0.0],
+        color: Point {
+            x: 0.5,
+            y: 0.0,
+            z: 1.0,
+        },
+        direction: normalize_vector(&Point {
+            x: 1.0,
+            y: 0.0,
+            z: 0.0,
+        }),
+    };
+    let s0 = Sphere {
+        center: Point {
+            x: 0.5,
+            y: 0.0,
+            z: -0.15,
+        },
+        radius: 0.05,
+        shader: Shader {
+            kd: 0.8,
+            ks: 0.1,
+            ka: 0.3,
+            od: Point {
+                x: 1.0,
+                y: 1.0,
+                z: 1.0,
+            },
+            os: Point {
+                x: 1.0,
+                y: 1.0,
+                z: 1.0,
+            },
+            kgls: 4.0,
+            kr: 0.0,
+            ao: Point {
+                x: 0.0,
+                y: 0.0,
+                z: 0.0,
+            },
+        },
+    };
+    let s1 = Sphere {
+        center: Point {
+            x: 0.3,
+            y: 0.0,
+            z: -0.1,
+        },
+        radius: 0.08,
+        shader: Shader {
+            kd: 0.8,
+            ks: 0.8,
+            ka: 0.1,
+            od: Point {
+                x: 1.0,
+                y: 0.0,
+                z: 0.0,
+            },
+            os: Point {
+                x: 0.5,
+                y: 1.0,
+                z: 0.5,
+            },
+            kgls: 32.0,
+            kr: 0.0,
+            ao: Point {
+                x: 0.1,
+                y: 0.1,
+                z: 0.1,
+            },
+        },
+    };
+    let s2 = Sphere {
+        center: Point {
+            x: -0.6,
+            y: 0.0,
+            z: 0.0,
+        },
+        radius: 0.3,
+        shader: Shader {
+            kd: 0.7,
+            ks: 0.5,
+            ka: 0.1,
+            od: Point {
+                x: 0.0,
+                y: 1.0,
+                z: 0.0,
+            },
+            os: Point {
+                x: 0.5,
+                y: 1.0,
+                z: 0.5,
+            },
+            kgls: 64.0,
+            kr: 0.0,
+            ao: Point {
+                x: 0.1,
+                y: 0.1,
+                z: 0.1,
+            },
+        },
+    };
+    let s3 = Sphere {
+        center: Point {
+            x: 0.1,
+            y: -0.55,
+            z: 0.25,
+        },
+        radius: 0.3,
+        shader: Shader {
+            kd: 0.0,
+            ks: 0.1,
+            ka: 0.1,
+            od: Point {
+                x: 0.75,
+                y: 0.75,
+                z: 0.75,
+            },
+            os: Point {
+                x: 1.0,
+                y: 1.0,
+                z: 1.0,
+            },
+            kgls: 10.0,
+            kr: 0.9,
+            ao: Point {
+                x: 0.1,
+                y: 0.1,
+                z: 0.1,
+            },
+        },
+    };
+    let t0: Triangle = Triangle {
+        p1: Point {
+            x: 0.3,
+            y: -0.3,
+            z: -0.4,
+        },
+        p2: Point {
+            x: 0.0,
+            y: 0.3,
+            z: -0.1,
+        },
+        p3: Point {
+            x: -0.3,
+            y: -0.3,
+            z: 0.2,
+        },
+    };
+    let t1: Triangle = Triangle {
+        p1: Point {
+            x: -0.2,
+            y: 0.1,
+            z: 0.1,
+        },
+        p2: Point {
+            x: -0.2,
+            y: -0.5,
+            z: 0.2,
+        },
+        p3: Point {
+            x: -0.2,
+            y: 0.1,
+            z: -0.3,
+        },
+    };
+    let mut triangles = Vec::new();
+    triangles.push(t0);
+    let p0: Polygon = Polygon {
+        triangles,
+        shader: Shader {
+            kd: 0.9,
+            ks: 0.9,
+            ka: 0.1,
+            od: Point {
+                x: 0.0,
+                y: 0.0,
+                z: 1.0,
+            },
+            os: Point {
+                x: 1.0,
+                y: 1.0,
+                z: 1.0,
+            },
+            kgls: 32.0,
+            kr: 0.0,
+            ao: Point {
+                x: 0.0,
+                y: 0.0,
+                z: 0.0,
+            },
+        },
+    };
+    let mut triangles = Vec::new();
+    triangles.push(t1);
+    let p1: Polygon = Polygon {
+        triangles,
+        shader: Shader {
+            kd: 0.9,
+            ks: 0.5,
+            ka: 0.1,
+            od: Point {
+                x: 1.0,
+                y: 1.0,
+                z: 0.0,
+            },
+            os: Point {
+                x: 1.0,
+                y: 1.0,
+                z: 1.0,
+            },
+            kgls: 4.0,
+            kr: 0.0,
+            ao: Point {
+                x: 0.0,
+                y: 0.0,
+                z: 0.0,
+            },
+        },
+    };
+
+    let mut objects: Vec<Box<dyn Object>> = Vec::new();
+    //let o1 = Object::Sphere(Sphere::from(s1));
+    objects.push(Box::new(s0));
+    objects.push(Box::new(s1));
+    objects.push(Box::new(s2));
+    objects.push(Box::new(s3));
+    objects.push(Box::new(p0));
+    objects.push(Box::new(p1));
+    let mut lights = Vec::new();
+    lights.push(l1);
+    let scene = Scene {
+        objects,
+        lights,
+        camera: c1,
+    };
+    scene
+}
+
 fn calculate_diffuse(kd: f32, plc: &Point, od: &Point, n: &Point, l: &Point) -> Point {
     kd * plc * od * f32::max(0.0, dot(&n, &l)) as f32
 }
@@ -1234,7 +927,7 @@ fn calculate_ambient(ka: f32, ao: &Point, od: &Point) -> Point {
 }
 
 fn calculate_specular(ks: f32, plc: &Point, os: &Point, v: &Point, r: &Point, kgls: f32) -> Point {
-    ks * plc * os * (f32::max(0.0, dot(&v, &r)) as f32).powf(kgls)
+    ks * plc * os * (f32::max(0.0, dot(&normalize_vector(&v), &normalize_vector(&r))) as f32).powf(kgls)
 }
 
 fn calculate_sphere_normal(p: &Point, s: &Sphere) -> Point {
@@ -1268,6 +961,7 @@ fn calculate_lighting(
         return amb;
     }
     let spec = calculate_specular(sh.ks, &l.color, &sh.os, &v, &r, sh.kgls);
+    // println!("view: ({}, {})", sh.kgls, sh.ks);
     let dif = calculate_diffuse(sh.kd, &l.color, &sh.od, &n, &l.direction);
     return dif + amb + spec;
 }
@@ -1320,15 +1014,15 @@ fn next_intersection<'a>(
     p: &'a Point,
     scene: &'a Scene,
     reflection: &'a Point,
-) -> (bool, Point, &'a Box<dyn Object>) {
+) -> (bool, Point, &'a Box<dyn Object>, Ray<'a>) {
     for o in &scene.objects {
         let r = calculate_ray(p, normalize_vector(&reflection));
         let (b, point) = o.intersect(&r);
         if b {
-            return (true, point, o);
+            return (true, point, o, r);
         }
     }
-    return (false, BACKGROUND_COLOR, &scene.objects[0]);
+    return (false, BACKGROUND_COLOR, &scene.objects[0], Ray { origin: &Point { x: 0.0, y: 0.0, z: 0.0 } , direction: Point { x: 0.0, y: 0.0, z: 0.0 } });
 }
 
 fn triangle_intersection(r: &Ray, tri: &Triangle) -> (bool, Point) {
@@ -1372,67 +1066,6 @@ fn polygon_intersection(r: &Ray, poly: &Polygon) -> (bool, Point) {
         z: 0.0,
     };
     for tri in &poly.triangles {
-        // let mut b = false;
-        // let n = &compute_triangle_normal(&tri);
-        //     let (b, p, n) = plane_intersection(-*d, &n, r);
-        //     let axis = get_dominant_coordinate(&n);
-        //     let ip2d = project_intersection_point(p, axis);
-        //     let t2d = project_verticies(tri, axis);
-        //     if b {
-        //         let points = [
-        //             [t2d.p1[0] - ip2d[0], t2d.p1[1] - ip2d[1]],
-        //             [t2d.p2[0] - ip2d[0], t2d.p2[1] - ip2d[1]],
-        //             [t2d.p3[0] - ip2d[0], t2d.p3[1] - ip2d[1]],
-        //         ];
-        //         let mut num_crossings: u32 = 0;
-        //         let mut sh = 1;
-        //         if points[0][1] < 0.0 {
-        //             sh = -1;
-        //         }
-        //         for i in 0..points.len() {
-        //             let mut nsh = 1;
-        //             let mut j = i + 1;
-        //             if i == points.len() - 1 {
-        //                 j = 0;
-        //             }
-        //             if points[j][1] < 0.0 {
-        //                 nsh = -1;
-        //             }
-        //             if sh != nsh {
-        //                 if points[i][0] > 0.0 && points[j][0] > 0.0 {
-        //                     num_crossings += 1;
-        //                 } else if points[i][0] > 0.0 || points[j][0] > 0.0 {
-        //                     let uc = points[i][0]
-        //                         - points[i][1] * (points[j][0] - points[i][0])
-        //                             / (points[j][1] - points[i][1]);
-        //                     if uc > 0.0 {
-        //                         num_crossings += 1;
-        //                     }
-        //                 }
-        //             }
-        //             sh = nsh;
-        //         }
-        //         if num_crossings % 2 == 0 {
-        //             return (
-        //                 true,
-        //                 Point {
-        //                     x: index as f32,
-        //                     y: 0.0,
-        //                     z: 0.0,
-        //                 },
-        //             );
-        //         }
-        //     }
-        //     index += 1;
-        // }
-        // return (
-        //     false,
-        //     Point {
-        //         x: 0.0,
-        //         y: 0.0,
-        //         z: 0.0,
-        //     },
-        // );
         let (b, ip) = triangle_intersection(r, tri);
         if b {
             return (b, ip);
@@ -1451,58 +1084,12 @@ fn calculate_ray(origin: &Point, direction: Point) -> Ray {
     r
 }
 
-fn reflection_color(
-    scene: &Scene,
-    o: &dyn Object,
-    point: &Point,
-    ray_direction: &Point,
-    depth: u32,
-    c: &Point,
-) -> Point {
-    let n = &o.calculate_normal(point);
-    let mut color = Point {
-        x: 0.0,
-        y: 0.0,
-        z: 0.0,
-    };
-    for l in &scene.lights {
-        let sp = point + &l.direction * 0.001;
-        let in_shadow = is_in_shadow(&sp, &scene, &l.direction);
-        let reflection = calculate_reflection(&n, &normalize_vector(&ray_direction));
-        color = c + calculate_lighting(
-            &n,
-            &o.get_shader(),
-            l,
-            &scene.camera.look_from,
-            &reflection,
-            &in_shadow,
-        );
-        let rp = point + &reflection * 0.001;
-        let (b, np, no) = next_intersection(&rp, scene, &reflection);
-        if b {
-            if depth > 0 {
-                color = &color
-                    + o.get_shader().kr
-                        * reflection_color(
-                            scene,
-                            no.as_ref(),
-                            &np,
-                            &normalize_vector(&reflection),
-                            depth - 1,
-                            &color,
-                        );
-            }
-        }
-    }
-    return color;
-}
-
 fn get_ray_color(
     scene: &Scene,
     o: &dyn Object,
     point: &Point,
     depth: u32,
-    c: &Point,
+    ray: &Ray,
 ) -> Point {
     let n = &o.calculate_normal(point);
     let mut color = Point {
@@ -1511,9 +1098,11 @@ fn get_ray_color(
         z: 0.0,
     };
     for l in &scene.lights {
+        let ray_reflection = calculate_reflection(&n, &normalize_vector(&(ray.origin - &ray.direction)));
         let sp = point + &l.direction * 0.001;
         let reflection = calculate_reflection(&n, &normalize_vector(&l.direction));
-        color = c + calculate_lighting(
+        println!("{} {} {}", reflection.x, reflection.y, reflection.z);
+        color = calculate_lighting(
             &n,
             &o.get_shader(),
             l,
@@ -1522,9 +1111,9 @@ fn get_ray_color(
             &is_in_shadow(&sp, &scene, &l.direction),
         );
         if o.get_shader().kr > 0.0 && depth > 0 {
-            let ray_reflection = calculate_reflection(&n, &point);
+            // let ray_reflection = calculate_reflection(&n, &normalize_vector(&(ray.origin - &ray.direction)));
             let rp = point + &ray_reflection * 0.001;
-            let (b, np, no) = next_intersection(&rp, scene, &ray_reflection);
+            let (b, np, no, nr) = next_intersection(&rp, scene, &ray_reflection);
             if b {
                 color = &color
                     + o.get_shader().kr
@@ -1533,10 +1122,10 @@ fn get_ray_color(
                             no.as_ref(),
                             &np,
                             depth - 1,
-                            &color,
+                            &nr,
                         );
             } else {
-                color = &color + o.get_shader().kr * BACKGROUND_COLOR;
+                return &color + o.get_shader().kr * BACKGROUND_COLOR;
             }
         }
         // color = color + reflection_color(&sp, &scene, &reflection, MAX_DEPTH);
@@ -1606,12 +1195,7 @@ fn trace_rays(scene: Scene, filename: &str) {
             let (pixel_objects, pixel_points) = get_all_intersected_objects(&scene, &r);
             if !pixel_objects.is_empty() {
                 let index = get_front_object(&pixel_objects, &pixel_points);
-                let c = Point {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0,
-                };
-                let color = get_ray_color(&scene, pixel_objects[index], &pixel_points[index], MAX_DEPTH, &c);
+                let color = get_ray_color(&scene, pixel_objects[index], &pixel_points[index], MAX_DEPTH, &r);
                 colors = save_colors(colors, color)
             } else {
                 colors = save_colors(colors, BACKGROUND_COLOR);
@@ -1624,7 +1208,7 @@ fn trace_rays(scene: Scene, filename: &str) {
 }
 
 fn main() -> Result<(), std::io::Error> {
-    let scene = construct_scene1();
+    let scene = construct_scene2();
     let filename = "image2.ppm";
     let result = create_ppm(filename);
     trace_rays(scene, filename);
