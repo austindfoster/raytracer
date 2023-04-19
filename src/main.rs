@@ -918,6 +918,376 @@ fn construct_scene3() -> Scene {
     scene
 }
 
+fn construct_scene4() -> Scene {
+    let c1 = Camera {
+        look_from: Point {
+            x: 0.0,
+            y: 0.0,
+            z: 1.0,
+        },
+        look_at: Point {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+        },
+        look_up: Point {
+            x: 0.0,
+            y: 1.0,
+            z: 0.0,
+        },
+        fov: 90.0,
+    };
+    let l1 = Light {
+        // location: [0.0,0.0,0.0],
+        color: Point {
+            x: 1.0,
+            y: 1.0,
+            z: 1.0,
+        },
+        direction: normalize_vector(&Point {
+            x: 0.3,
+            y: 0.3,
+            z: 1.0,
+        }),
+    };
+    let s0 = Sphere {
+        center: Point {
+            x: 0.5,
+            y: 0.0,
+            z: -0.15,
+        },
+        radius: 0.05,
+        shader: Shader {
+            kd: 0.8,
+            ks: 0.1,
+            ka: 0.3,
+            od: Point {
+                x: 1.0,
+                y: 0.0,
+                z: 0.0,
+            },
+            os: Point {
+                x: 1.0,
+                y: 1.0,
+                z: 1.0,
+            },
+            kgls: 4.0,
+            kr: 0.0,
+            ao: Point {
+                x: 0.0,
+                y: 0.0,
+                z: 0.0,
+            },
+        },
+    };
+    let s1 = Sphere {
+        center: Point {
+            x: 0.3,
+            y: 0.0,
+            z: -1.5,
+        },
+        radius: 0.08,
+        shader: Shader {
+            kd: 0.8,
+            ks: 0.8,
+            ka: 0.1,
+            od: Point {
+                x: 1.0,
+                y: 0.0,
+                z: 0.0,
+            },
+            os: Point {
+                x: 0.5,
+                y: 1.0,
+                z: 0.5,
+            },
+            kgls: 32.0,
+            kr: 0.0,
+            ao: Point {
+                x: 0.1,
+                y: 0.1,
+                z: 0.1,
+            },
+        },
+    };
+    let s2 = Sphere {
+        center: Point {
+            x: -0.6,
+            y: -0.1,
+            z: -1.3,
+        },
+        radius: 0.3,
+        shader: Shader {
+            kd: 0.7,
+            ks: 0.5,
+            ka: 0.1,
+            od: Point {
+                x: 0.0,
+                y: 0.75,
+                z: 0.5,
+            },
+            os: Point {
+                x: 0.5,
+                y: 1.0,
+                z: 0.5,
+            },
+            kgls: 64.0,
+            kr: 0.0,
+            ao: Point {
+                x: 0.1,
+                y: 0.1,
+                z: 0.1,
+            },
+        },
+    };
+    let s3 = Sphere {
+        center: Point {
+            x: -0.2,
+            y: 0.2,
+            z: 0.45,
+        },
+        radius: 0.08,
+        shader: Shader {
+            kd: 0.0,
+            ks: 0.6,
+            ka: 0.1,
+            od: Point {
+                x: 0.75,
+                y: 0.75,
+                z: 0.75,
+            },
+            os: Point {
+                x: 1.0,
+                y: 1.0,
+                z: 1.0,
+            },
+            kgls: 10.0,
+            kr: 0.9,
+            ao: Point {
+                x: 0.1,
+                y: 0.1,
+                z: 0.1,
+            },
+        },
+    };
+    let t0: Triangle = Triangle {
+        p1: Point {
+            x: 0.0,
+            y: -0.05858,
+            z: 0.34142,
+        },
+        p2: Point {
+            x: 0.28284,
+            y: 0.14142,
+            z: 0.14142,
+        },
+        p3: Point {
+            x: -0.28284,
+            y: 0.14142,
+            z: 0.14142,
+        },
+    };
+    let t1: Triangle = Triangle {
+        p1: Point {
+            x: -0.28284,
+            y: 0.14142,
+            z: 0.14142,
+        },
+        p2: Point {
+            x: 0.28284,
+            y: 0.14142,
+            z: 0.14142,
+        },
+        p3: Point {
+            x: 0.0,
+            y: 0.34142,
+            z: -0.058579,
+        },
+    };
+    let t2: Triangle = Triangle {
+        p1: Point {
+            x: 0.0,
+            y: -0.05858,
+            z: 0.34142,
+        },
+        p2: Point {
+            x: 0.0,
+            y: -0.34142,
+            z: 0.058579,
+        },
+        p3: Point {
+            x: 0.28284,
+            y: 0.14142,
+            z: 0.14142,
+        },
+    };
+    let t3: Triangle = Triangle {
+        p1: Point {
+            x: 0.28284,
+            y: -0.14142,
+            z: -0.14142,
+        },
+        p2: Point {
+            x: 0.28284,
+            y: 0.14142,
+            z: 0.14142,
+        },
+        p3: Point {
+            x: 0.0,
+            y: -0.341421,
+            z: 0.058579,
+        },
+    };
+    let t4: Triangle = Triangle {
+        p1: Point {
+            x: -0.28284,
+            y: 0.14142,
+            z: 0.14142,
+        },
+        p2: Point {
+            x: -0.28284,
+            y: -0.14142,
+            z: -0.14142,
+        },
+        p3: Point {
+            x: 0.0,
+            y: -0.058579,
+            z: 0.34142,
+        },
+    };
+    let t5: Triangle = Triangle {
+        p3: Point {
+            x: 0.0,
+            y: -0.058579,
+            z: 0.34142,
+        },
+        p1: Point {
+            x: -0.28284,
+            y: -0.14142,
+            z: -0.14142,
+        },
+        p2: Point {
+            x: 0.0,
+            y: -0.34142,
+            z: 0.058579,
+        },
+    };
+    let t6: Triangle = Triangle {
+        p1: Point {
+            x: -5.0,
+            y: -1.5,
+            z: -5.0,
+        },
+        p2: Point {
+            x: -5.0,
+            y: -1.5,
+            z: 5.0,
+        },
+        p3: Point {
+            x: 5.0,
+            y: -1.5,
+            z: -5.0,
+        },
+    };
+    let t7: Triangle = Triangle {
+        p1: Point {
+            x: 1.0,
+            y: -1.5,
+            z: 5.0,
+        },
+        p2: Point {
+            x: -1.0,
+            y: -1.5,
+            z: 5.0,
+        },
+        p3: Point {
+            x: 1.0,
+            y: -1.5,
+            z: -5.0,
+        },
+    };
+    let mut triangles = Vec::new();
+    triangles.push(t0);
+    triangles.push(t1);
+    triangles.push(t2);
+    triangles.push(t3);
+    triangles.push(t4);
+    triangles.push(t5);
+    let mut objects: Vec<Box<dyn Object>> = Vec::new();
+    for triangle in triangles {
+        let p0: Polygon = Polygon {
+            triangles: vec![triangle],
+            shader: Shader {
+                kd: 0.9,
+                ks: 0.9,
+                ka: 0.1,
+                od: Point {
+                    x: 0.0,
+                    y: 0.0,
+                    z: 1.0,
+                },
+                os: Point {
+                    x: 1.0,
+                    y: 1.0,
+                    z: 1.0,
+                },
+                kgls: 32.0,
+                kr: 0.0,
+                ao: Point {
+                    x: 0.1,
+                    y: 0.1,
+                    z: 0.1,
+                },
+            },
+        };
+        objects.push(Box::new(p0));
+    }
+    let mut triangles = Vec::new();
+    triangles.push(t6);
+    triangles.push(t7);
+    for triangle in triangles {
+        let p0: Polygon = Polygon {
+            triangles: vec![triangle],
+            shader: Shader {
+                kd: 0.9,
+                ks: 0.9,
+                ka: 0.1,
+                od: Point {
+                    x: 1.0,
+                    y: 1.0,
+                    z: 0.0,
+                },
+                os: Point {
+                    x: 1.0,
+                    y: 1.0,
+                    z: 1.0,
+                },
+                kgls: 32.0,
+                kr: 0.0,
+                ao: Point {
+                    x: 0.1,
+                    y: 0.1,
+                    z: 0.1,
+                },
+            },
+        };
+        objects.push(Box::new(p0));
+    }
+    //let o1 = Object::Sphere(Sphere::from(s1));
+    objects.push(Box::new(s0));
+    //objects.push(Box::new(s1));
+    objects.push(Box::new(s2));
+    objects.push(Box::new(s3));
+    let mut lights = Vec::new();
+    lights.push(l1);
+    let scene = Scene {
+        objects,
+        lights,
+        camera: c1,
+    };
+    scene
+}
+
 fn calculate_diffuse(kd: f32, plc: &Point, od: &Point, n: &Point, l: &Point) -> Point {
     kd * plc * od * f32::max(0.0, dot(&n, &l)) as f32
 }
@@ -1101,7 +1471,6 @@ fn get_ray_color(
         let ray_reflection = calculate_reflection(&n, &normalize_vector(&(ray.origin - &ray.direction)));
         let sp = point + &l.direction * 0.001;
         let reflection = calculate_reflection(&n, &normalize_vector(&l.direction));
-        println!("{} {} {}", reflection.x, reflection.y, reflection.z);
         color = calculate_lighting(
             &n,
             &o.get_shader(),

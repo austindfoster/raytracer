@@ -75,7 +75,7 @@ impl Object for Polygon {
 
     
     fn calculate_normal(&self, p: &Point) -> Point {
-        let tn = compute_triangle_normal(&self.triangles[p.x as usize]);
+        let tn = compute_triangle_normal(&self.triangles[0]);
         return tn;
     }
 
